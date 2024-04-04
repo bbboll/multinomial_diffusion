@@ -114,6 +114,7 @@ chain_samples = eval_args.samples
 with torch.no_grad():
     samples_chain = model.sample_chain(chain_samples)
 
+#import pdb; pdb.set_trace()
 
 images = []
 for samples_i in samples_chain:

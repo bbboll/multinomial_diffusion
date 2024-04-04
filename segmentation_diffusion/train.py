@@ -53,6 +53,18 @@ optim_id = get_optim_id(args)
 ## Training ##
 ##############
 
+# print(args,
+#     data_id,
+#     model_id,
+#     optim_id,
+#     train_loader,
+#     eval_loader,
+#     model,
+#     optimizer,
+#     scheduler_iter,
+#     scheduler_epoch)
+# exit()
+
 exp = Experiment(args=args,
                  data_id=data_id,
                  model_id=model_id,

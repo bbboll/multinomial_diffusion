@@ -15,9 +15,9 @@ import numpy as np
 import os
 from PIL import Image
 
-from torchflow.data import DATA_PATH
+#from torchflow.data import DATA_PATH
 
-ROOT = DATA_PATH
+ROOT = "./"
 
 
 def fn_to_tensor(img):
@@ -26,7 +26,8 @@ def fn_to_tensor(img):
     # Add channel to grayscale images.
     if len(img.shape) == 2:
         img = img[:, :, None]
-    img = np.array(img).transpose(2, 0, 1)
+    img = np.array(img)
+    img = img.transpose(2, 0, 1)
     return torch.from_numpy(img)
 
 
@@ -150,8 +151,8 @@ class BMNIST(torch.utils.data.Dataset):
 
 def load_bmnist(batch_size, download=True, **kwargs):
     train_transforms = transforms.Compose([
-        transforms.Pad(1, padding_mode='edge'),
-        transforms.RandomCrop(28),
+        #transforms.Pad(1, padding_mode='edge'),
+        #transforms.RandomCrop(28),
         toTensor()
     ])
 

@@ -313,6 +313,21 @@ class MultinomialDiffusion(torch.nn.Module):
             Lt_sqrt[0] = Lt_sqrt[1]  # Overwrite decoder term with L1.
             pt_all = Lt_sqrt / Lt_sqrt.sum()
 
+            if (pt_all.abs() < 1e-5).all():
+                print("all multinomial weights were 0\n")
+                return self.sample_time(b, device, method='uniform')
+            if (pt_all < 1e-10).any():
+                print("some multinomial weights were negative\n")
+                return self.sample_time(b, device, method='uniform')
+            if torch.isnan(pt_all.sum()):
+                print("multinomial weights were NaN\n")
+                return self.sample_time(b, device, method='uniform')
+            if torch.isnan(pt_all.sum()):
+                print("multinomial weights were NaN\n")
+                return self.sample_time(b, device, method='uniform')
+            if torch.isinf(pt_all.sum()):
+                print("multinomial weights were inf\n")
+                return self.sample_time(b, device, method='uniform')
             t = torch.multinomial(pt_all, num_samples=b, replacement=True)
 
             pt = pt_all.gather(dim=0, index=t)

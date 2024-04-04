@@ -10,9 +10,11 @@ from cityscapes.cityscapes_fast import CityscapesFast, \
     cityscapes_indices_segmentation_to_img, \
     cityscapes_only_categories_indices_segmentation_to_img
 
+from datasets.dataset import BMNIST
+
 dataset_choices = {
     'cityscapes_coarse', 'cityscapes_fine',
-    'cityscapes_coarse_large', 'cityscapes_fine_large'}
+    'cityscapes_coarse_large', 'cityscapes_fine_large', 'bmnist'}
 
 
 def add_data_args(parser):
@@ -27,6 +29,14 @@ def add_data_args(parser):
     parser.add_argument('--pin_memory', type=eval, default=False)
     parser.add_argument('--augmentation', type=str, default=None)
 
+def bmnist_plot_transform(indices):
+    colors = torch.tensor([(0,0,0), (1,1,1)], dtype=torch.int64)
+    if indices.size(1) == 1:
+        # Remove single channel axis.
+        indices = indices[:, 0]
+    rgbs = colors[indices]
+    rgbs = rgbs.permute(0, 3, 1, 2)
+    return rgbs*255
 
 def get_plot_transform(args):
     if args.dataset in ('cityscapes_coarse', 'cityscapes_coarse_large'):
@@ -35,6 +45,8 @@ def get_plot_transform(args):
     elif args.dataset in ('cityscapes_fine', 'cityscapes_fine_large'):
         return cityscapes_indices_segmentation_to_img
 
+    elif args.dataset == 'bmnist':
+        return bmnist_plot_transform
     else:
         def identity(x):
             return x
@@ -95,6 +107,15 @@ def get_data(args):
             split='test', resolution=(128, 256), transform=pil_transforms,
             only_categories=False)
 
+    elif args.dataset == 'bmnist':
+        data_shape = (1, 32, 32)
+        num_classes = 2
+        mnist_transforms = Compose([
+            Pad(2, padding_mode='edge')
+        ])
+
+        train = BMNIST('./bmnist', 'train', mnist_transforms, download=True)
+        test = BMNIST('./bmnist', 'test', mnist_transforms, download=False)
     else:
         raise ValueError
 
