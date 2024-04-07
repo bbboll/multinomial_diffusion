@@ -2,5 +2,7 @@
 __pycache__
 data_path
 segmentation_diffusion/bmnist
+segmentation_diffusion/mnist
+segmentation_diffusion/datasets/bmnist
 segmentation_diffusion/cityscapes/preprocessed
 segmentation_diffusion/wandb

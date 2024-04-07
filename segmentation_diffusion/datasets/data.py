@@ -11,10 +11,11 @@ from cityscapes.cityscapes_fast import CityscapesFast, \
     cityscapes_only_categories_indices_segmentation_to_img
 
 from datasets.dataset import BMNIST
+from datasets.mnist import BinarizedMNIST
 
 dataset_choices = {
     'cityscapes_coarse', 'cityscapes_fine',
-    'cityscapes_coarse_large', 'cityscapes_fine_large', 'bmnist'}
+    'cityscapes_coarse_large', 'cityscapes_fine_large', 'bmnist', 'bmnist_round'}
 
 
 def add_data_args(parser):
@@ -116,6 +117,15 @@ def get_data(args):
 
         train = BMNIST('./bmnist', 'train', mnist_transforms, download=True)
         test = BMNIST('./bmnist', 'test', mnist_transforms, download=False)
+
+    elif args.dataset == 'bmnist_round':
+        data_shape = (1, 32, 32)
+        num_classes = 2
+        bmnist_module = BinarizedMNIST()
+        train_loader = bmnist_module.dataloader(split="train", batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers, pin_memory=args.pin_memory)
+        eval_loader = bmnist_module.dataloader(split="test", batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers, pin_memory=args.pin_memory)
+        return train_loader, eval_loader, data_shape, num_classes
+
     else:
         raise ValueError
 
